@@ -1,0 +1,26 @@
+#pragma once
+
+#include <string>
+#include <gmpxx.h>
+
+#include <tao/config/value.hpp>
+#include <hoytech/hex.h>
+#include <hoytech/error.h>
+#include <ethers-cpp/keccak.h>
+#include <ethers-cpp/SolidityAbi.h>
+#include "defaultDb.h"
+
+
+using hoytech::to_hex;
+using hoytech::from_hex;
+
+
+extern std::string dbDir;
+extern tao::config::value config;
+extern defaultDb::environment env;
+
+
+void loadConfig(std::string configFile);
+
+
+[% IF useGlobalH %][% INSERT "global.h" %][% END %]

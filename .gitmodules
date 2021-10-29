@@ -1,0 +1,27 @@
+[submodule "external/uWebSockets"]
+	path = external/uWebSockets
+	url = https://github.com/hoytech/uWebSockets.git
+[submodule "external/hoytech-cpp"]
+	path = external/hoytech-cpp
+	url = https://github.com/hoytech/hoytech-cpp.git
+[submodule "external/config"]
+	path = external/config
+	url = https://github.com/taocpp/config.git
+[submodule "external/rasgueadb"]
+	path = external/rasgueadb
+	url = https://github.com/hoytech/rasgueadb.git
+[submodule "external/lmdbxx"]
+	path = external/lmdbxx
+	url = https://github.com/hoytech/lmdbxx.git
+[submodule "external/docopt.cpp"]
+	path = external/docopt.cpp
+	url = https://github.com/docopt/docopt.cpp.git
+[submodule "external/ethers-cpp"]
+	path = external/ethers-cpp
+	url = https://github.com/hoytech/ethers-cpp.git
+[submodule "external/json"]
+	path = external/json
+	url = https://github.com/taocpp/json.git
+[submodule "external/PEGTL"]
+	path = external/PEGTL
+	url = https://github.com/taocpp/PEGTL.git

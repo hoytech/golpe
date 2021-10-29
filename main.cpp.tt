@@ -1,0 +1,98 @@
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <iostream>
+
+#include <hoytech/error.h>
+#include <docopt.h>
+
+#include "golpe.h"
+
+
+
+static const char USAGE[] =
+R"(
+    Usage: [% appDef.appName %] [--config=<config>] <command> [<args>...]
+
+    Options:
+      --config=<config>   Config file (default $ENV{[% appDef.appName FILTER upper %]_CONFIG} || "/etc/[% appDef.appName %].conf" || "./[% appDef.appName %].conf")
+      -h --help           Show this screen.
+      --version           Show version.
+
+    Commands:
+[%- FOREACH cmd IN cmds %]
+      [% cmd %]
+[%- END %]
+)";
+
+
+
+std::string dbDir;
+tao::config::value config;
+defaultDb::environment env;
+
+
+
+[% FOREACH cmd IN cmds %]
+void cmd_[% cmd %](const std::vector<std::string> &subArgs);
+[% END %]
+
+
+
+static bool fileExists(const char *name) {
+    return access(name, F_OK) != -1;
+}
+
+
+void run(int argc, char **argv) {
+    std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% appDef.appName %]", true);
+
+
+    std::string configFile;
+
+    if (args["--config"]) {
+        configFile = args["--config"].asString();
+    } else if (getenv("[% appDef.appName FILTER upper %]_CONFIG")) {
+        configFile = std::string(getenv("[% appDef.appName FILTER upper %]_CONFIG"));
+    } else if (fileExists("/etc/[% appDef.appName %].conf")) {
+        configFile = "/etc/[% appDef.appName %].conf";
+    } else if (fileExists("./[% appDef.appName %].conf")) {
+        configFile = "./[% appDef.appName %].conf";
+    } else {
+        throw hoytech::error("please specify config file");
+    }
+
+    loadConfig(configFile);
+
+    dbDir = config.optional<std::string>("db").value_or("./[% appDef.appName %]-db/");
+
+    env.open(dbDir);
+
+
+    std::string command = args["<command>"].asString();
+
+    [% FOREACH cmd IN cmds %]
+        if (command == "[% cmd %]") {
+            cmd_[% cmd %](args["<args>"].asStringList());
+            return;
+        }
+    [% END %]
+
+    throw hoytech::error("unknown command: ", command);
+}
+
+
+int main(int argc, char **argv) {
+    try {
+        run(argc, argv);
+    } catch (std::exception &e) {
+        std::cerr << "[% appDef.appName %] error: " << e.what() << std::endl;
+        ::exit(1);
+    }
+
+    return 0;
+}

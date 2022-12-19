@@ -4,12 +4,13 @@
 #include <gmpxx.h>
 
 #include <tao/config/value.hpp>
+#include <tao/config/value.hpp>
 #include <hoytech/hex.h>
 #include <hoytech/error.h>
-#include <ethers-cpp/keccak.h>
-#include <ethers-cpp/SolidityAbi.h>
 #include "defaultDb.h"
 
+#define LOGURU_WITH_STREAMS 1
+#include <loguru.hpp>
 
 using hoytech::to_hex;
 using hoytech::from_hex;

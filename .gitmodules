@@ -16,12 +16,12 @@
 [submodule "external/docopt.cpp"]
 	path = external/docopt.cpp
 	url = https://github.com/docopt/docopt.cpp.git
-[submodule "external/ethers-cpp"]
-	path = external/ethers-cpp
-	url = https://github.com/hoytech/ethers-cpp.git
 [submodule "external/json"]
 	path = external/json
 	url = https://github.com/taocpp/json.git
 [submodule "external/PEGTL"]
 	path = external/PEGTL
 	url = https://github.com/taocpp/PEGTL.git
+[submodule "external/loguru"]
+	path = external/loguru
+	url = git@github.com:emilk/loguru.git

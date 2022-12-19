@@ -72,6 +72,7 @@ void run(int argc, char **argv) {
 
     env.open(dbDir);
 
+    loguru::init(argc, argv);
 
     std::string command = args["<command>"].asString();
 

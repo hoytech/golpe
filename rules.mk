@@ -10,11 +10,13 @@ SRCS    := golpe/config.cpp build/main.cpp $(wildcard *.cpp)
 OBJS    := $(SRCS:.cpp=.o)
 DEPS    := $(SRCS:.cpp=.d)
 
-.PHONY: all clean setup-golpe
+SETUP_CHECK_FILE := golpe/external/hoytech-cpp/README.md
+
+.PHONY: all clean setup-golpe gitmodules-dev-config
 
 all: $(BIN)
 
-$(BIN): $(OBJS) $(DEPS) build/defaultDb.h golpe/external/uWebSockets/libuWS.a
+$(BIN): $(SETUP_CHECK_FILE) $(OBJS) $(DEPS) build/defaultDb.h golpe/external/uWebSockets/libuWS.a
 	$(CXX) $(OBJS) $(CMDOBJS) $(LDFLAGS) $(LDLIBS) -o $(BIN)
 
 golpe/external/uWebSockets/libuWS.a:
@@ -35,7 +37,7 @@ build/golpe.h: golpe/golpe.h.tt golpe/gen-golpe.h.pl $(wildcard global.h)
 
 %.d : ;
 
-build/defaultDb.h: schema.yaml
+build/defaultDb.h: $(wildcard schema.yaml)
 	golpe/external/rasgueadb/rasgueadb-generate schema.yaml build
 
 clean:
@@ -44,3 +46,9 @@ clean:
 
 setup-golpe:
 	cd golpe && git submodule update --init
+
+$(SETUP_CHECK_FILE):
+	$(error Please run 'make setup-golpe')
+
+gitmodules-dev-config:
+	perl -pi -e 's{https://github.com/([^/]+)/(\S+)}{git\@github.com:$$1/$$2}' .git/modules/golpe/config .git/modules/golpe/modules/external/*/config

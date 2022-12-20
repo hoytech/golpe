@@ -8,8 +8,12 @@ use Data::Dumper;
 use YAML;
 use Template;
 
+die "app-def.yaml is deprecated, use schema.yaml" if -e "./app-def.yaml";
+my $schema = YAML::LoadFile('./schema.yaml');
 
-my $appDef = YAML::LoadFile('./app-def.yaml');
+my $appDef = {
+    appName => $schema->{appName} || "app",
+};
 
 
 my @cmds = map { /^cmd_(.*)\.cpp$/ && $1 } glob('cmd_*.cpp');

@@ -9,15 +9,29 @@
 #include <hoytech/error.h>
 #include "defaultDb.h"
 
+// Logging
+
 #define LOGURU_WITH_STREAMS 1
 #include <loguru.hpp>
 #define LE LOG_S(ERROR)
 #define LW LOG_S(WARNING)
 #define LI LOG_S(INFO)
 
+template<class... T>
+inline void setThreadName(const T&... value) {
+    std::ostringstream o;
+    hoytech::build_string(o, value...);
+    loguru::set_thread_name(o.str().c_str());
+}
+
+// Convenience
+
 using hoytech::to_hex;
 using hoytech::from_hex;
+#define herr hoytech::error
 
+
+// Globals
 
 extern std::string dbDir;
 extern tao::config::value config;

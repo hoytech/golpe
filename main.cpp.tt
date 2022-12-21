@@ -16,10 +16,10 @@
 
 static const char USAGE[] =
 R"(
-    Usage: [% appDef.appName %] [--config=<config>] <command> [<args>...]
+    Usage: [% golpe.appName %] [--config=<config>] <command> [<args>...]
 
     Options:
-      --config=<config>   Config file (default $ENV{[% appDef.appName FILTER upper %]_CONFIG} || "/etc/[% appDef.appName %].conf" || "./[% appDef.appName %].conf")
+      --config=<config>   Config file (default $ENV{[% golpe.appName FILTER upper %]_CONFIG} || "/etc/[% golpe.appName %].conf" || "./[% golpe.appName %].conf")
       -h --help           Show this screen.
       --version           Show version.
 
@@ -49,28 +49,37 @@ static bool fileExists(const char *name) {
 
 
 void run(int argc, char **argv) {
-    std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% appDef.appName %]", true);
+    std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %]", true);
 
 
     std::string configFile;
 
     if (args["--config"]) {
         configFile = args["--config"].asString();
-    } else if (getenv("[% appDef.appName FILTER upper %]_CONFIG")) {
-        configFile = std::string(getenv("[% appDef.appName FILTER upper %]_CONFIG"));
-    } else if (fileExists("/etc/[% appDef.appName %].conf")) {
-        configFile = "/etc/[% appDef.appName %].conf";
-    } else if (fileExists("./[% appDef.appName %].conf")) {
-        configFile = "./[% appDef.appName %].conf";
+    } else if (getenv("[% golpe.appName FILTER upper %]_CONFIG")) {
+        configFile = std::string(getenv("[% golpe.appName FILTER upper %]_CONFIG"));
+    } else if (fileExists("/etc/[% golpe.appName %].conf")) {
+        configFile = "/etc/[% golpe.appName %].conf";
+    } else if (fileExists("./[% golpe.appName %].conf")) {
+        configFile = "./[% golpe.appName %].conf";
     } else {
         throw hoytech::error("please specify config file");
     }
 
     loadConfig(configFile);
 
-    dbDir = config.optional<std::string>("db").value_or("./[% appDef.appName %]-db/");
+    dbDir = config.optional<std::string>("db").value_or("./[% golpe.appName %]-db/");
 
     env.open(dbDir);
+
+    [% IF golpe.quadrable %]
+    {
+        quadrable::Quadrable qdb;
+        auto txn = env.txn_rw();
+        qdb.init(txn);
+        txn.commit();
+    }
+    [% END %]
 
     loguru::init(argc, argv);
 
@@ -91,7 +100,7 @@ int main(int argc, char **argv) {
     try {
         run(argc, argv);
     } catch (std::exception &e) {
-        std::cerr << "[% appDef.appName %] error: " << e.what() << std::endl;
+        std::cerr << "[% golpe.appName %] error: " << e.what() << std::endl;
         ::exit(1);
     }
 

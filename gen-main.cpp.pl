@@ -9,17 +9,14 @@ use YAML;
 use Template;
 
 die "app-def.yaml is deprecated, use golpe.yaml" if -e "./app-def.yaml";
+die "schema.yaml is deprecated, use golpe.yaml" if -e "./schema.yaml";
 my $golpe = YAML::LoadFile('./golpe.yaml');
-
-my $appDef = {
-    appName => $golpe->{appName} || "app",
-};
 
 
 my @cmds = map { /^cmd_(.*)\.cpp$/ && $1 } glob('cmd_*.cpp');
 
 my $ctx = {
-    appDef => $appDef,
+    golpe => $golpe,
     cmds => \@cmds,
 };
 

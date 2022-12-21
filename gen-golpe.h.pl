@@ -8,8 +8,11 @@ use Data::Dumper;
 use YAML;
 use Template;
 
+my $golpe = YAML::LoadFile('./golpe.yaml');
 
-my $ctx = {};
+my $ctx = {
+    golpe => $golpe,
+};
 
 $ctx->{useGlobalH} = 1 if -e './global.h';
 

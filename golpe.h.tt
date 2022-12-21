@@ -8,6 +8,9 @@
 #include <hoytech/hex.h>
 #include <hoytech/error.h>
 #include "defaultDb.h"
+[% IF golpe.quadrable %]
+#include "quadrable.h"
+[% END %]
 
 // Logging
 

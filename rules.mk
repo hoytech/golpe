@@ -37,8 +37,8 @@ build/golpe.h: golpe/golpe.h.tt golpe/gen-golpe.h.pl $(wildcard global.h)
 
 %.d : ;
 
-build/defaultDb.h: $(wildcard schema.yaml)
-	golpe/external/rasgueadb/rasgueadb-generate schema.yaml build
+build/defaultDb.h: $(wildcard golpe.yaml)
+	golpe/external/rasgueadb/rasgueadb-generate golpe.yaml build
 
 clean:
 	rm -rf $(BIN) *.o *.d build/

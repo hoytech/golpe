@@ -8,11 +8,11 @@ use Data::Dumper;
 use YAML;
 use Template;
 
-die "app-def.yaml is deprecated, use schema.yaml" if -e "./app-def.yaml";
-my $schema = YAML::LoadFile('./schema.yaml');
+die "app-def.yaml is deprecated, use golpe.yaml" if -e "./app-def.yaml";
+my $golpe = YAML::LoadFile('./golpe.yaml');
 
 my $appDef = {
-    appName => $schema->{appName} || "app",
+    appName => $golpe->{appName} || "app",
 };
 
 

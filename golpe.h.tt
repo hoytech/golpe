@@ -33,6 +33,13 @@ using hoytech::to_hex;
 using hoytech::from_hex;
 #define herr hoytech::error
 
+struct NonCopyable {
+    NonCopyable & operator=(const NonCopyable&) = delete;
+    NonCopyable(const NonCopyable&) = delete;
+    NonCopyable(NonCopyable&&) = default;
+    NonCopyable() = default;
+};
+
 
 // Globals
 

@@ -81,7 +81,8 @@ void run(int argc, char **argv) {
     }
     [% END %]
 
-    loguru::init(argc, argv);
+    loguru::g_preamble_file = false;
+    loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .sigint = false, }, });
 
     std::string command = args["<command>"].asString();
 

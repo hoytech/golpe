@@ -16,7 +16,8 @@ foreach my $c (@$config) {
     die "invalid name: $c->{name}" if $c->{name} =~ /^_/;
     $c->{nameCpp} = $c->{name};
     $c->{nameCpp} =~ s{[.]}{__}g;
-    $c->{valueTrailer} = 'ULL' if $c->{type} eq 'uint64';
+
+    $c->{path} = [ split(/[.]/, $c->{name}) ];
 
     if ($c->{type} eq 'uint64') {
         $c->{typeCpp} = 'uint64_t';

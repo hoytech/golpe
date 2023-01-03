@@ -1,16 +1,46 @@
+#include "golpe.h"
+
 #include <tao/config.hpp>
 
-#include "config.h"
 
 std::atomic<ConfigValues*> currentCfg;
 
 
 void loadConfig(const std::string &configFile) {
-    auto configJson = tao::config::from_file(configFile);
+    tao::config::value configJson;
 
-    ConfigValues *newCfg = new ConfigValues;
+    try {
+        configJson = tao::config::from_file(configFile);
+    } catch (std::exception &e) {
+        throw herr("Failed to load config file '", configFile, "': ", e.what());
+    }
 
-    auto *oldCfg = currentCfg.exchange(newCfg);
+    std::unique_ptr<ConfigValues> tmpCfg = std::make_unique<ConfigValues>();
 
-    if (oldCfg) delete oldCfg;
+
+    [% FOREACH c IN config %]
+    // [% c.name %]
+    do {
+        auto val = configJson;
+
+        [% FOREACH p IN c.path %]
+            if (!val.is_object()) break;
+            if (!val.get_object().contains("[% p %]")) break;
+            val = val.at("[% p %]");
+        [% END %]
+
+        [% IF c.type == 'uint64' %]
+            if (!val.is_unsigned()) throw herr("[% c.name %] not a uint64");
+            tmpCfg->[% c.nameCpp %] = val.get_unsigned();
+        [% ELSIF c.type == 'string' %]
+            if (!val.is_string()) throw herr("[% c.name %] not a string");
+            tmpCfg->[% c.nameCpp %] = val.get_string();
+        [% END %]
+    } while(0);
+    [% END %]
+
+
+    // Atomically swap in new config, and destroy old one:
+
+    tmpCfg.reset(currentCfg.exchange(tmpCfg.release()));
 }

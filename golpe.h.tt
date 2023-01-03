@@ -7,7 +7,14 @@
 #include <tao/config/value.hpp>
 #include <hoytech/hex.h>
 #include <hoytech/error.h>
+
+#include "flatbuffers/flatbuffers.h"
+#include "flatbuffers/minireflect.h"
+[% FOREACH h IN generatedHeaders -%]
+#include "[% h %]"
+[% END %]
 #include "defaultDb.h"
+
 [% IF golpe.quadrable %]
 #include "quadrable.h"
 [% END %]

@@ -12,6 +12,7 @@ my $golpe = YAML::LoadFile('./golpe.yaml');
 
 my $ctx = {
     golpe => $golpe,
+    generatedHeaders => [ map { s{^build/+}{}r } glob('build/*_generated.h'), ],
 };
 
 $ctx->{useGlobalH} = 1 if -e './global.h';

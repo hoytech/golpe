@@ -32,7 +32,7 @@ R"(
 
 
 std::string dbDir;
-tao::config::value config;
+std::string configFile;
 defaultDb::environment env;
 
 
@@ -52,8 +52,6 @@ void run(int argc, char **argv) {
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %]", true);
 
 
-    std::string configFile;
-
     if (args["--config"]) {
         configFile = args["--config"].asString();
     } else if (getenv("[% golpe.appName FILTER upper %]_CONFIG")) {
@@ -68,7 +66,7 @@ void run(int argc, char **argv) {
 
     loadConfig(configFile);
 
-    dbDir = config.optional<std::string>("db").value_or("./[% golpe.appName %]-db/");
+    dbDir = cfg().db;
 
     env.open(dbDir);
 

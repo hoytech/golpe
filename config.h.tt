@@ -1,0 +1,21 @@
+#pragma once
+
+#include <atomic>
+
+
+struct ConfigValues {
+    uint64_t _configVersion = 0;
+
+[% FOREACH c IN config %]
+    [% c.typeCpp %] [% c.nameCpp %] = [% c.defaultCpp %];
+[% END %]
+
+};
+
+void loadConfig(const std::string &configFile);
+
+extern std::atomic<ConfigValues*> currentCfg;
+
+inline const ConfigValues &cfg() {
+    return *currentCfg.load();
+}

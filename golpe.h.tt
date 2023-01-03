@@ -50,12 +50,10 @@ struct NonCopyable {
 
 // Globals
 
+#include "config.h"
+
 extern std::string dbDir;
-extern tao::config::value config;
 extern defaultDb::environment env;
-
-
-void loadConfig(std::string configFile);
 
 
 [% IF useGlobalH %][% INSERT "global.h" %][% END %]

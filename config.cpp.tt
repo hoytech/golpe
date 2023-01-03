@@ -1,0 +1,16 @@
+#include <tao/config.hpp>
+
+#include "config.h"
+
+std::atomic<ConfigValues*> currentCfg;
+
+
+void loadConfig(const std::string &configFile) {
+    auto configJson = tao::config::from_file(configFile);
+
+    ConfigValues *newCfg = new ConfigValues;
+
+    auto *oldCfg = currentCfg.exchange(newCfg);
+
+    if (oldCfg) delete oldCfg;
+}

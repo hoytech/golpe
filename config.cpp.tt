@@ -22,7 +22,7 @@ void loadConfig(const std::string &configFile) {
         throw herr("Failed to load config file '", configFile, "': ", e.what());
     }
 
-    std::unique_ptr<ConfigValues> tmpCfg = std::make_unique<ConfigValues>();
+    std::unique_ptr<ConfigValues> tmpCfg = std::make_unique<ConfigValues>(currentCfg.load() ? currentCfg.load()->version() + 1 : 1);
 
     // Load from configJson into tmpCfg
 
@@ -74,7 +74,10 @@ void loadConfig(const std::string &configFile) {
         LI << "CONFIG: successfully installed";
 
         // Atomically swap in new config, and load old one into unique_ptr so it's destroyed:
-        tmpCfg.reset(currentCfg.exchange(tmpCfg.release()));
+        ConfigValues *oldCfg = currentCfg.exchange(tmpCfg.release());
+
+        // Intentionally leak this memory! Threads may still have references to it.
+        (void)oldCfg;
     } else {
         LI << "CONFIG: no changes detected, doing nothing";
     }

@@ -4,7 +4,13 @@
 
 
 struct ConfigValues {
+  private:
     uint64_t _configVersion = 1;
+
+  public:
+    ConfigValues(uint64_t ver) : _configVersion(ver) {}
+
+    uint64_t version() const { return _configVersion; }
 
 [% FOREACH c IN config %]
     [% c.typeCpp %] [% c.nameCpp %] = [% c.defaultCpp %];

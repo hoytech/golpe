@@ -26,3 +26,7 @@ Coming soon
 ## Example apps
 
 Coming soon
+
+## Tips
+
+* If you add a new command, to avoid rebuilding everything, run `rm build/main.*` and then `make`

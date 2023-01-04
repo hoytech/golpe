@@ -8,7 +8,7 @@ Most of the framework is configured in a declarative manner, by editing a file n
 
 * [LMDB](https://lmdb.tech/) database integration
   * C++17 fork of [lmdbxx](https://github.com/hoytech/lmdbxx/)
-  * [https://github.com/hoytech/rasgueadb](RasgueaDB) indexing and query layer
+  * [RasgueaDB](https://github.com/hoytech/rasgueadb) indexing and query layer
   * [Flatbuffers](https://google.github.io/flatbuffers/) for DB record encoding (and optionally network transports)
   * [Quadrable](https://github.com/hoytech/quadrable) integration for anti-entropy replication
 * Fork of [uWebsockets 0.14](https://github.com/hoytech/uWebSockets) (last version with websocket client support)

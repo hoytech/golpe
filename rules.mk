@@ -30,10 +30,10 @@ build/config.o: OPT=-O0 -g
 build/main.cpp: golpe/main.cpp.tt golpe/gen-main.cpp.pl
 	perl golpe/gen-main.cpp.pl
 
-build/config.cpp: golpe/config.cpp.tt golpe/gen-config.pl
+build/config.cpp: golpe/config.cpp.tt golpe/gen-config.pl $(wildcard golpe.yaml)
 	perl golpe/gen-config.pl
 
-build/config.h: build/config.cpp
+build/config.h: build/config.cpp $(wildcard golpe.yaml)
 
 build/golpe.h: golpe/golpe.h.tt golpe/gen-golpe.h.pl $(wildcard global.h) $(wildcard *.fbs)
 	perl golpe/gen-fbs.pl

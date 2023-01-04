@@ -13,11 +13,17 @@ my $golpe = YAML::LoadFile('./golpe.yaml');
 my $config = $golpe->{config} || [];
 
 foreach my $c (@$config) {
-    die "invalid name: $c->{name}" if $c->{name} =~ /^_/;
     $c->{nameCpp} = $c->{name};
-    $c->{nameCpp} =~ s{[.]}{__}g;
 
-    $c->{path} = [ split(/[.]/, $c->{name}) ];
+    $c->{path} = [ split(/__/, $c->{name}) ];
+
+    if (!defined $c->{type}) {
+        if ($c->{default} =~ /^\d+$/) {
+            $c->{type} = 'uint64';
+        } else {
+            $c->{type} = 'string';
+        }
+    }
 
     if ($c->{type} eq 'uint64') {
         $c->{typeCpp} = 'uint64_t';

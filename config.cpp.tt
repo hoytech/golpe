@@ -1,12 +1,19 @@
+#include <mutex>
+
 #include "golpe.h"
 
 #include <tao/config.hpp>
 
 
 std::atomic<ConfigValues*> currentCfg;
+std::mutex currentCfgModificationMutex;
 
 
 void loadConfig(const std::string &configFile) {
+    std::lock_guard<std::mutex> guard(currentCfgModificationMutex);
+
+    LI << "CONFIG: Loading config from file: " << configFile;
+
     tao::config::value configJson;
 
     try {
@@ -17,6 +24,7 @@ void loadConfig(const std::string &configFile) {
 
     std::unique_ptr<ConfigValues> tmpCfg = std::make_unique<ConfigValues>();
 
+    // Load from configJson into tmpCfg
 
     [% FOREACH c IN config %]
     // [% c.name %]
@@ -39,8 +47,35 @@ void loadConfig(const std::string &configFile) {
     } while(0);
     [% END %]
 
+    // Log config changes and check for non-reloadable changes
 
-    // Atomically swap in new config, and destroy old one:
+    uint64_t changes = 0;
 
-    tmpCfg.reset(currentCfg.exchange(tmpCfg.release()));
+    if (currentCfg.load()) {
+        [% FOREACH c IN config %]
+            {
+                auto &oldVal = currentCfg.load()->[% c.nameCpp %];
+                auto &newVal = tmpCfg->[% c.nameCpp %];
+
+                if (oldVal != newVal) {
+                    [% IF c.noReload %]
+                        LI << "  * '[% c.name %]' changed but is a noReload field. Ignoring.";
+                        newVal = oldVal;
+                    [% ELSE %]
+                        LI << "  * '[% c.name %]' changed from '" << oldVal << "' to '" << newVal << "'";
+                        changes++;
+                    [% END %]
+                }
+            }
+        [% END %]
+    }
+
+    if (!currentCfg.load() || changes) {
+        LI << "CONFIG: successfully installed";
+
+        // Atomically swap in new config, and load old one into unique_ptr so it's destroyed:
+        tmpCfg.reset(currentCfg.exchange(tmpCfg.release()));
+    } else {
+        LI << "CONFIG: no changes detected, doing nothing";
+    }
 }

@@ -53,6 +53,7 @@ struct NonCopyable {
 #include "config.h"
 
 extern std::string dbDir;
+extern std::string configFile;
 extern defaultDb::environment env;
 
 

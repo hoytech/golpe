@@ -51,6 +51,8 @@ static bool fileExists(const char *name) {
 void run(int argc, char **argv) {
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %]", true);
 
+    loguru::g_preamble_file = false;
+    loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .sigint = false, }, });
 
     if (args["--config"]) {
         configFile = args["--config"].asString();
@@ -78,9 +80,6 @@ void run(int argc, char **argv) {
         txn.commit();
     }
     [% END %]
-
-    loguru::g_preamble_file = false;
-    loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .sigint = false, }, });
 
     std::string command = args["<command>"].asString();
 

@@ -4,7 +4,7 @@
 
 
 struct ConfigValues {
-    uint64_t _configVersion = 0;
+    uint64_t _configVersion = 1;
 
 [% FOREACH c IN config %]
     [% c.typeCpp %] [% c.nameCpp %] = [% c.defaultCpp %];

@@ -13,7 +13,7 @@ die "schema.yaml is deprecated, use golpe.yaml" if -e "./schema.yaml";
 my $golpe = YAML::LoadFile('./golpe.yaml');
 
 
-my @cmds = map { /^cmd_(.*)\.cpp$/ && $1 } glob('cmd_*.cpp');
+my @cmds = map { m{^src/cmd_(.*)\.cpp$} && $1 } glob('src/cmd_*.cpp');
 
 my $ctx = {
     golpe => $golpe,

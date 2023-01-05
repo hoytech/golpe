@@ -2,7 +2,7 @@
 
 use strict;
 
-foreach my $fbsFile (glob('*.fbs')) {
+foreach my $fbsFile (glob('fbs/*.fbs')) {
     flatc($fbsFile, 'build');
 }
 

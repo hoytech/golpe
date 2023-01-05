@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <gmpxx.h>
 
 #include <tao/config/value.hpp>
 #include <tao/config/value.hpp>

@@ -46,6 +46,8 @@ struct NonCopyable {
     NonCopyable() = default;
 };
 
+const uint64_t MAX_U64 = std::numeric_limits<uint64_t>::max();
+
 
 // Globals
 

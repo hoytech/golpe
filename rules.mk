@@ -39,7 +39,7 @@ build/golpe.h: golpe/golpe.h.tt golpe/gen-golpe.h.pl $(wildcard global.h) $(wild
 	perl golpe/gen-fbs.pl
 	perl golpe/gen-golpe.h.pl
 
--include *.d
+-include src/*.d
 
 %.d : ;
 

@@ -47,6 +47,7 @@ struct NonCopyable {
 };
 
 const uint64_t MAX_U64 = std::numeric_limits<uint64_t>::max();
+#define GOLPE_GIT_VER "[% gitVer %]"
 
 
 // Globals

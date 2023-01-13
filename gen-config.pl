@@ -18,7 +18,9 @@ foreach my $c (@$config) {
     $c->{path} = [ split(/__/, $c->{name}) ];
 
     if (!defined $c->{type}) {
-        if ($c->{default} =~ /^\d+$/) {
+        if ($c->{default} =~ /^(true|false)$/i) {
+            $c->{type} = 'bool';
+        } elsif ($c->{default} =~ /^\d+$/) {
             $c->{type} = 'uint64';
         } else {
             $c->{type} = 'string';
@@ -35,7 +37,7 @@ foreach my $c (@$config) {
         $c->{defaultCpp} = '"' . $c->{defaultCpp} . '"';
     } elsif ($c->{type} eq 'bool') {
         $c->{typeCpp} = 'bool';
-        $c->{defaultCpp} = lc($c->default);
+        $c->{defaultCpp} = lc($c->{default});
     } else {
         die "unknown type: $c->{type}";
     }

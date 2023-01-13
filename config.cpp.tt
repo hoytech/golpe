@@ -43,6 +43,11 @@ void loadConfig(const std::string &configFile) {
         [% ELSIF c.type == 'string' %]
             if (!val.is_string()) throw herr("[% c.name %] not a string");
             tmpCfg->[% c.nameCpp %] = val.get_string();
+        [% ELSIF c.type == 'bool' %]
+            if (!val.is_boolean()) throw herr("[% c.name %] not a bool");
+            tmpCfg->[% c.nameCpp %] = val.get_boolean();
+        [% ELSE %]
+            #error "unknown type [% c.type %]"
         [% END %]
     } while(0);
     [% END %]

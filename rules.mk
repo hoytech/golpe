@@ -29,7 +29,7 @@ golpe/external/uWebSockets/libuWS.a:
 
 build/config.o: OPT=-O0 -g
 
-build/main.cpp: golpe/main.cpp.tt golpe/gen-main.cpp.pl
+build/main.cpp: golpe/main.cpp.tt golpe/gen-main.cpp.pl build/app_git_version.h
 	perl golpe/gen-main.cpp.pl
 
 build/config.cpp: golpe/config.cpp.tt golpe/gen-config.pl $(wildcard golpe.yaml)

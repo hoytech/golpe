@@ -12,6 +12,8 @@
 
 #include "golpe.h"
 
+#include "app_git_version.h"
+
 
 
 static const char USAGE[] =
@@ -49,7 +51,7 @@ static bool fileExists(const char *name) {
 
 
 void run(int argc, char **argv) {
-    std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %]", true);
+    std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %] " APP_GIT_VERSION, true);
 
     loguru::g_preamble_file = false;
     loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .sigint = false, }, });

@@ -10,6 +10,8 @@ SRCS    := golpe/logging.cpp build/main.cpp build/config.cpp $(wildcard src/*.cp
 OBJS    := $(SRCS:.cpp=.o)
 DEPS    := $(SRCS:.cpp=.d)
 
+JUNK_ARG := $(shell perl golpe/pre-build.pl)
+
 SETUP_CHECK_FILE := golpe/external/hoytech-cpp/README.md
 
 .PHONY: all clean setup-golpe gitmodules-dev-config

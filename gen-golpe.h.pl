@@ -9,21 +9,10 @@ use YAML;
 use Template;
 
 
-my $gitVer;
-
-{
-    my $commitNum = `git rev-list --count --first-parent HEAD`;
-    chomp $commitNum;
-    my $commitHash = `git rev-parse HEAD`;
-    $commitHash = substr($commitHash, 0, 7);
-    $gitVer = "v$commitNum-$commitHash";
-}
-
 my $golpe = YAML::LoadFile('./golpe.yaml');
 
 my $ctx = {
     golpe => $golpe,
-    gitVer => $gitVer,
     generatedHeaders => [ map { s{^build/+}{}r } glob('build/*_generated.h'), ],
 };
 

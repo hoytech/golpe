@@ -18,6 +18,11 @@
 #include "quadrable.h"
 [% END %]
 
+[% IF golpe.onAppStartup %]
+void onAppStartup(lmdb::txn &txn, const std::string &cmd);
+[% END %]
+
+
 // Logging
 
 #define LOGURU_WITH_STREAMS 1

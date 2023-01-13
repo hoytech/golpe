@@ -72,18 +72,24 @@ void run(int argc, char **argv) {
 
     dbDir = cfg().db;
 
+    std::string command = args["<command>"].asString();
+
     env.open(dbDir);
 
-    [% IF golpe.quadrable %]
     {
-        quadrable::Quadrable qdb;
         auto txn = env.txn_rw();
+
+        [% IF golpe.quadrable %]
+        quadrable::Quadrable qdb;
         qdb.init(txn);
+        [% END %]
+
+        [% IF golpe.onAppStartup %]
+        onAppStartup(txn, command);
+        [% END %]
+
         txn.commit();
     }
-    [% END %]
-
-    std::string command = args["<command>"].asString();
 
     [% FOREACH cmd IN cmds %]
         if (command == "[% cmd %]") {

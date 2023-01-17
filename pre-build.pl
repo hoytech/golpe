@@ -8,7 +8,10 @@ my $versionHeader = 'build/app_git_version.h';
 
 my $gitVer;
 
-{
+`git log -1 2>&1 >/dev/null`;
+if ($?) {
+    $gitVer = 'no-git-commits';
+} else {
     my $commitNum = `git rev-list --count --first-parent HEAD`;
     chomp $commitNum;
     my $commitHash = `git rev-parse HEAD`;

@@ -21,7 +21,27 @@ Most of the framework is configured in a declarative manner, by editing a file n
 
 ## Setup
 
-Coming soon
+Run:
+
+    mkdir myapp
+    cd myapp
+    git init
+    git submodule add https://github.com/hoytech/golpe.git
+
+Edit `Makefile`:
+
+    BIN = myapp
+    OPT = -O3 -g
+
+    include golpe/rules.mk
+
+Edit `golpe.yaml`:
+
+    appName: myapp
+
+Run:
+
+    make setup-golpe
 
 ## Example apps
 

@@ -108,7 +108,9 @@ sub genDefaultConfig {
             genDefaultConfig($o, $i, $indent + 1);
             $$o .= "$prefix}\n";
         } else {
-            $$o .= "$prefix# $i->{desc}\n" if $i->{desc};
+            my $extra;
+            $extra = " (restart required)" if $i->{noReload};
+            $$o .= "$prefix# $i->{desc}$extra\n" if $i->{desc};
             my $default = $i->{default};
             $default = qq{"$default"} if $i->{type} eq 'string';
             $$o .= "$prefix$i->{key} = $default\n";

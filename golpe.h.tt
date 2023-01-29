@@ -63,4 +63,6 @@ extern std::string configFile;
 extern defaultDb::environment env;
 
 
-[% IF useGlobalH %][% INSERT "global.h" %][% END %]
+[% IF golpe.useGlobalH %]
+#include "global.h"
+[% END %]

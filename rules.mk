@@ -2,7 +2,7 @@ W        ?= -Wall
 OPT      ?= -O2 -g
 STD      ?= -std=c++20
 CXXFLAGS += $(STD) $(OPT) $(W) -fPIC $(XCXXFLAGS) -DDOCOPT_HEADER_ONLY
-INCS     += -Iinclude -Ibuild -Isrc -Igolpe/external -Igolpe/external/lmdbxx/include -Igolpe/external/config/include -Igolpe/external/json/include -Igolpe/external/PEGTL/include -Igolpe/external/hoytech-cpp -Igolpe/external/docopt.cpp -Igolpe/external/loguru -Igolpe/external/quadrable/include
+INCS     += -Iinclude -Ibuild -Isrc -Igolpe/external -Igolpe/external/lmdbxx/include -Igolpe/external/config/include -Igolpe/external/json/include -Igolpe/external/PEGTL/include -Igolpe/external/hoytech-cpp -Igolpe/external/docopt.cpp -Igolpe/external/loguru -Igolpe/external/quadrable/include -Igolpe/external/parallel-hashmap
 LDLIBS   += golpe/external/uWebSockets/libuWS.a -ldl -lz -lcrypto -lssl -llmdb -pthread
 LDFLAGS  += -flto $(XLDFLAGS)
 SRCS    := golpe/logging.cpp build/main.cpp build/config.cpp $(wildcard src/*.cpp)

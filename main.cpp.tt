@@ -74,7 +74,15 @@ void run(int argc, char **argv) {
 
     [% IF golpe.tables %]
     dbDir = cfg().db;
-    env.open(dbDir);
+
+    [% IF golpe.customLMDBSetup %]
+        env.lmdb_env.set_max_dbs(64);
+        env.lmdb_env.set_max_readers(cfg().dbParams__maxreaders);
+        env.lmdb_env.set_mapsize(cfg().dbParams__mapsize);
+        env.open(dbDir, false);
+    [% ELSE %]
+        env.open(dbDir);
+    [% END %]
 
     {
         auto txn = env.txn_rw();

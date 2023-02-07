@@ -87,11 +87,6 @@ void run(int argc, char **argv) {
     {
         auto txn = env.txn_rw();
 
-        [% IF golpe.quadrable %]
-        quadrable::Quadrable qdb;
-        qdb.init(txn);
-        [% END %]
-
         [% IF golpe.onAppStartup %]
         onAppStartup(txn, command);
         [% END %]

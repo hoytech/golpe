@@ -14,10 +14,6 @@
 [% END %]
 #include "defaultDb.h"
 
-[% IF golpe.quadrable %]
-#include "quadrable.h"
-[% END %]
-
 [% IF golpe.onAppStartup %]
 void onAppStartup(lmdb::txn &txn, const std::string &cmd);
 [% END %]

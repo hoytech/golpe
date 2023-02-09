@@ -14,7 +14,7 @@ JUNK_ARG := $(shell perl golpe/pre-build.pl)
 
 SETUP_CHECK_FILE := golpe/external/hoytech-cpp/README.md
 
-.PHONY: all clean setup-golpe gitmodules-dev-config
+.PHONY: all clean setup-golpe update-submodules gitmodules-dev-config
 
 all: $(BIN)
 
@@ -51,6 +51,10 @@ build/defaultDb.h: $(wildcard golpe.yaml)
 clean:
 	rm -rf $(BIN) src/*.o src/*.d build/
 	cd golpe/external/uWebSockets && make clean
+
+update-submodules:
+	git submodule update --init
+	cd golpe && git submodule update --init
 
 setup-golpe:
 	cd golpe && git submodule update --init

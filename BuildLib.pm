@@ -126,7 +126,7 @@ sub sys {
 
 
 sub get_version {
-    my $git_commit_count = `git rev-list --count --first-parent HEAD`;
+    my $git_commit_count = `git rev-list --count HEAD`;
     chomp $git_commit_count;
 
     my $git_rev = `git rev-parse HEAD`;

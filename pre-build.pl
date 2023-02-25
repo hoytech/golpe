@@ -12,7 +12,7 @@ my $gitVer;
 if ($?) {
     $gitVer = 'no-git-commits';
 } else {
-    my $commitNum = `git rev-list --count --first-parent HEAD`;
+    my $commitNum = `git rev-list --count HEAD`;
     chomp $commitNum;
     my $commitHash = `git rev-parse HEAD`;
     $commitHash = substr($commitHash, 0, 7);

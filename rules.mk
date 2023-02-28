@@ -24,7 +24,7 @@ $(BIN): $(SETUP_CHECK_FILE) $(OBJS) $(DEPS) build/defaultDb.h golpe/external/uWe
 golpe/external/uWebSockets/libuWS.a:
 	cd golpe/external/uWebSockets && make -j libuWS.a
 
-%.o : %.cpp %.d build/golpe.h build/config.h build/defaultDb.h
+%.o : %.cpp build/golpe.h build/config.h build/defaultDb.h
 	$(CXX) $(CXXFLAGS) $(INCS) -MMD -MP -MT $@ -MF $*.d -c $< -o $@
 
 build/config.o: OPT=-O0 -g

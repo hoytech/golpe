@@ -10,7 +10,6 @@ Most of the framework is configured in a declarative manner, by editing a file n
   * C++17 fork of [lmdbxx](https://github.com/hoytech/lmdbxx/)
   * [RasgueaDB](https://github.com/hoytech/rasgueadb) indexing and query layer
   * [Flatbuffers](https://google.github.io/flatbuffers/) for DB record encoding (and optionally network transports)
-  * [Quadrable](https://github.com/hoytech/quadrable) integration for anti-entropy replication
 * Fork of [uWebsockets 0.14](https://github.com/hoytech/uWebSockets) (last version with websocket client support)
 * Automatic detection of `cmd_*.cpp` files and git-like subcommand dispatching
 * [taocpp config](https://github.com/taocpp/config) setup and hot reloading app when config file changes

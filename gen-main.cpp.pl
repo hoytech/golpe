@@ -8,17 +8,27 @@ use Data::Dumper;
 use YAML;
 use Template;
 
+my $apps = shift // die "need list of apps";
+
+
 die "app-def.yaml is deprecated, use golpe.yaml" if -e "./app-def.yaml";
 die "schema.yaml is deprecated, use golpe.yaml" if -e "./schema.yaml";
 my $golpe = YAML::LoadFile('./golpe.yaml');
 
 
-my @cmds = map { m{^src/cmd_(.*)\.cpp$} && $1 } glob('src/cmd_*.cpp');
-
 my $ctx = {
     golpe => $golpe,
-    cmds => \@cmds,
+    cmds => [ map { m{^src/cmd_(.*)\.cpp$} && $1 } glob('src/cmd_*.cpp') ],
+    apps => [],
 };
+
+for my $app (split / /, $apps) {
+    my @cmds = map { m{/cmd_(.*)\.cpp$} && $1 } glob("src/apps/$app/cmd_*.cpp");
+    push @{ $ctx->{apps} }, {
+        name => $app,
+        cmds => \@cmds,
+    };
+}
 
 
 my $tt = Template->new({

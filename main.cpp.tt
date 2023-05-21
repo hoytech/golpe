@@ -25,9 +25,19 @@ R"(
       -h --help           Show this screen.
       --version           Show version.
 
-    Commands:
+[% IF cmds.size > 0 %]
+    commands:
 [%- FOREACH cmd IN cmds %]
       [% cmd %]
+[%- END %]
+
+[%- END %]
+[%- FOREACH app IN apps %]
+    [% app.name %] commands:
+[%- FOREACH cmd IN app.cmds %]
+      [% cmd %]
+[%- END %]
+
 [%- END %]
 )";
 
@@ -42,6 +52,10 @@ defaultDb::environment env;
 [% FOREACH cmd IN cmds %]
 void cmd_[% cmd %](const std::vector<std::string> &subArgs);
 [% END %]
+
+[% FOREACH app IN apps %][% FOREACH cmd IN app.cmds %]
+void cmd_[% cmd %](const std::vector<std::string> &subArgs);
+[% END %][% END %]
 
 
 
@@ -101,6 +115,13 @@ void run(int argc, char **argv) {
             return;
         }
     [% END %]
+
+    [% FOREACH app IN apps %][% FOREACH cmd IN app.cmds %]
+        if (command == "[% cmd %]") {
+            cmd_[% cmd %](args["<args>"].asStringList());
+            return;
+        }
+    [% END %][% END %]
 
     throw hoytech::error("unknown command: ", command);
 }

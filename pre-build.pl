@@ -8,15 +8,20 @@ my $versionHeader = 'build/app_git_version.h';
 
 my $gitVer;
 
-`git log -1 2>&1 >/dev/null`;
+$gitVer = `git describe --tags`;
+chomp $gitVer;
+
 if ($?) {
-    $gitVer = 'no-git-commits';
-} else {
-    my $commitNum = `git rev-list --count HEAD`;
-    chomp $commitNum;
-    my $commitHash = `git rev-parse HEAD`;
-    $commitHash = substr($commitHash, 0, 7);
-    $gitVer = "v$commitNum-$commitHash";
+    `git log -1 2>&1 >/dev/null`;
+    if ($?) {
+        $gitVer = 'no-git-commits';
+    } else {
+        my $commitNum = `git rev-list --count HEAD`;
+        chomp $commitNum;
+        my $commitHash = `git rev-parse HEAD`;
+        $commitHash = substr($commitHash, 0, 7);
+        $gitVer = "v$commitNum-$commitHash";
+    }
 }
 
 {

@@ -8,7 +8,7 @@ my $versionHeader = 'build/app_git_version.h';
 
 my $gitVer;
 
-$gitVer = `git describe --tags`;
+$gitVer = `git describe --tags 2>/dev/null`;
 chomp $gitVer;
 
 if ($?) {

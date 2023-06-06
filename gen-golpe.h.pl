@@ -2,14 +2,16 @@
 
 use strict;
 
-use FindBin;
 use Data::Dumper;
-
-use YAML;
 use Template;
 
+use FindBin;
+use lib "$FindBin::Bin/";
+use LoadGolpe;
 
-my $golpe = YAML::LoadFile('./golpe.yaml');
+
+my $golpe = LoadGolpe::load();
+
 
 my $ctx = {
     golpe => $golpe,

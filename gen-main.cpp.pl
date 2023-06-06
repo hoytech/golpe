@@ -2,18 +2,15 @@
 
 use strict;
 
-use FindBin;
 use Data::Dumper;
-
-use YAML;
 use Template;
 
-my $apps = shift // die "need list of apps";
+use FindBin;
+use lib "$FindBin::Bin/";
+use LoadGolpe;
 
 
-die "app-def.yaml is deprecated, use golpe.yaml" if -e "./app-def.yaml";
-die "schema.yaml is deprecated, use golpe.yaml" if -e "./schema.yaml";
-my $golpe = YAML::LoadFile('./golpe.yaml');
+my $golpe = LoadGolpe::load();
 
 
 my $ctx = {
@@ -22,7 +19,7 @@ my $ctx = {
     apps => [],
 };
 
-for my $app (split / /, $apps) {
+for my $app (split / /, $ENV{APPS}) {
     my @cmds = map { m{/cmd_(.*)\.cpp$} && $1 } glob("src/apps/$app/cmd_*.cpp");
     push @{ $ctx->{apps} }, {
         name => $app,

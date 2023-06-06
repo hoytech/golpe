@@ -2,13 +2,16 @@
 
 use strict;
 
-use FindBin;
 use Data::Dumper;
-
-use YAML;
 use Template;
 
-my $golpe = YAML::LoadFile('./golpe.yaml');
+use FindBin;
+use lib "$FindBin::Bin/";
+use LoadGolpe;
+
+
+my $golpe = LoadGolpe::load();
+
 
 my $config = $golpe->{config} || [];
 

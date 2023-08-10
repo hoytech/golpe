@@ -89,13 +89,16 @@ void run(int argc, char **argv) {
     [% IF golpe.tables %]
     dbDir = cfg().db;
 
+    unsigned int dbFlags = 0;
+    if (cfg().dbParams__noReadAhead) dbFlags |= MDB_NORDAHEAD;
+
     [% IF golpe.customLMDBSetup %]
         env.lmdb_env.set_max_dbs(64);
         env.lmdb_env.set_max_readers(cfg().dbParams__maxreaders);
         env.lmdb_env.set_mapsize(cfg().dbParams__mapsize);
-        env.open(dbDir, false);
+        env.open(dbDir, false, dbFlags);
     [% ELSE %]
-        env.open(dbDir);
+        env.open(dbDir, true, dbFlags);
     [% END %]
 
     {

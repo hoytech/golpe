@@ -3,7 +3,6 @@
 #include <string>
 
 #include <tao/config/value.hpp>
-#include <tao/config/value.hpp>
 #include <hoytech/hex.h>
 #include <hoytech/error.h>
 

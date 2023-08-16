@@ -9,11 +9,7 @@ std::atomic<ConfigValues*> currentCfg;
 std::mutex currentCfgModificationMutex;
 
 
-void loadConfig(const std::string &configFile) {
-    std::lock_guard<std::mutex> guard(currentCfgModificationMutex);
-
-    LI << "CONFIG: Loading config from file: " << configFile;
-
+tao::config::value loadRawTaoConfig(const std::string &configFile) {
     tao::config::value configJson;
 
     try {
@@ -21,6 +17,17 @@ void loadConfig(const std::string &configFile) {
     } catch (std::exception &e) {
         throw herr("Failed to load config file '", configFile, "': ", e.what());
     }
+
+    return configJson;
+}
+
+
+void loadConfig(const std::string &configFile) {
+    std::lock_guard<std::mutex> guard(currentCfgModificationMutex);
+
+    LI << "CONFIG: Loading config from file: " << configFile;
+
+    tao::config::value configJson = loadRawTaoConfig(configFile);
 
     std::unique_ptr<ConfigValues> tmpCfg = std::make_unique<ConfigValues>(currentCfg.load() ? currentCfg.load()->version() + 1 : 1);
 

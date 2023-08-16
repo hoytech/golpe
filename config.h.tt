@@ -2,6 +2,8 @@
 
 #include <atomic>
 
+#include <tao/config/value.hpp>
+
 
 struct ConfigValues {
   private:
@@ -18,6 +20,7 @@ struct ConfigValues {
 
 };
 
+tao::config::value loadRawTaoConfig(const std::string &configFile);
 void loadConfig(const std::string &configFile);
 
 extern std::atomic<ConfigValues*> currentCfg;

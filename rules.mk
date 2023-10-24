@@ -1,14 +1,34 @@
+ifeq ($(shell echo | gcc -E -dM - | grep -c __FreeBSD__),1)
+    __FreeBSD__ = 1
+endif
+
 APPS     ?=
 export APPS
 
 W        ?= -Wall
 OPT      ?= -O2 -g
 STD      ?= -std=c++20
+
+ifneq ($(origin __FreeBSD__), undefined)
+CXX      = g++
+CC       = cc
+MAKE     = gmake
+STD      += -stdlib=libc++
+endif
+
 CXXFLAGS += $(STD) $(OPT) $(W) -fPIC $(XCXXFLAGS) -DDOCOPT_HEADER_ONLY
 INCS     += -Iinclude -Ibuild -Isrc -Igolpe/external -Igolpe/external/lmdbxx/include -Igolpe/external/config/include -Igolpe/external/json/include -Igolpe/external/PEGTL/include -Igolpe/external/hoytech-cpp -Igolpe/external/docopt.cpp -Igolpe/external/loguru -Igolpe/external/parallel-hashmap
 LDLIBS   += golpe/external/uWebSockets/libuWS.a -ldl -lz -lcrypto -lssl -llmdb -pthread
 LDFLAGS  += -flto $(XLDFLAGS)
 SRCS    := golpe/logging.cpp build/main.cpp build/config.cpp $(wildcard src/*.cpp) $(wildcard $(foreach p,$(APPS),src/apps/$(p)/*.cpp))
+
+ifneq ($(origin __FreeBSD__), undefined)
+    INCS    += -I/usr/local/include  # Add FreeBSD-specific include paths
+    LDLIBS  += -linotify -lc++ -luv
+    # XXX used /home/user/libuv/build/libuv.a to debug into and replace -luv on LDLIBS
+    NPROC = 2
+endif
+
 
 OBJS    := $(SRCS:.cpp=.o)
 DEPS    := $(SRCS:.cpp=.d)
@@ -25,12 +45,12 @@ $(BIN): $(SETUP_CHECK_FILE) $(OBJS) $(DEPS) build/defaultDb.h golpe/external/uWe
 	$(CXX) $(OBJS) $(CMDOBJS) $(LDFLAGS) $(LDLIBS) -o $(BIN)
 
 golpe/external/uWebSockets/libuWS.a:
-	cd golpe/external/uWebSockets && make -j libuWS.a
+	cd golpe/external/uWebSockets && make -j$(NPROC) libuWS.a
 
 %.o : %.cpp build/golpe.h build/config.h build/defaultDb.h
 	$(CXX) $(CXXFLAGS) $(INCS) -MMD -MP -MT $@ -MF $*.d -c $< -o $@
 
-build/config.o: OPT=-O0 -g
+build/config.o: OPT=-O0 -g # XXX -03 at one point on bsd
 
 build/main.cpp: golpe/main.cpp.tt golpe/gen-main.cpp.pl build/app_git_version.h
 	perl golpe/gen-main.cpp.pl

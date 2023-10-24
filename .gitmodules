@@ -1,6 +1,6 @@
 [submodule "external/uWebSockets"]
 	path = external/uWebSockets
-	url = https://github.com/hoytech/uWebSockets.git
+	url = https://github.com/cosmicpsyop/uWebSockets.git
 [submodule "external/hoytech-cpp"]
 	path = external/hoytech-cpp
 	url = https://github.com/hoytech/hoytech-cpp.git

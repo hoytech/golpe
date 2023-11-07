@@ -25,7 +25,6 @@ SRCS    := golpe/logging.cpp build/main.cpp build/config.cpp $(wildcard src/*.cp
 ifneq ($(origin __FreeBSD__), undefined)
     INCS    += -I/usr/local/include  # Add FreeBSD-specific include paths
     LDLIBS  += -linotify -lc++ -luv
-    # XXX used /home/user/libuv/build/libuv.a to debug into and replace -luv on LDLIBS
     NPROC = 2
 endif
 
@@ -50,7 +49,7 @@ golpe/external/uWebSockets/libuWS.a:
 %.o : %.cpp build/golpe.h build/config.h build/defaultDb.h
 	$(CXX) $(CXXFLAGS) $(INCS) -MMD -MP -MT $@ -MF $*.d -c $< -o $@
 
-build/config.o: OPT=-O0 -g # XXX -03 at one point on bsd
+build/config.o: OPT=-O0 -g
 
 build/main.cpp: golpe/main.cpp.tt golpe/gen-main.cpp.pl build/app_git_version.h
 	perl golpe/gen-main.cpp.pl

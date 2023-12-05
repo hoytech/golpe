@@ -88,4 +88,4 @@ $(SETUP_CHECK_FILE):
 	$(error Please run 'make setup-golpe')
 
 gitmodules-dev-config:
-	perl -pi -e 's{https://github.com/([^/]+)/(\S+)}{git\@github.com:$$1/$$2}' .git/modules/golpe/config .git/modules/golpe/modules/external/*/config
+	perl -pi -e 's{https://github.com/([^/]+)/(\S+)}{git\@github.com:$$1/$$2}' .git/modules/external/*/config .git/modules/golpe/config .git/modules/golpe/modules/external/*/config

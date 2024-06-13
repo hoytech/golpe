@@ -59,16 +59,17 @@ void cmd_[% cmd %](const std::vector<std::string> &subArgs);
 
 
 
-static bool fileExists(const char *name) {
-    return access(name, F_OK) != -1;
-}
-
-
 void run(int argc, char **argv) {
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %] " APP_GIT_VERSION, true);
 
+    loguru::g_stderr_verbosity = [% golpe.verbosity || 0 %];
     loguru::g_preamble_file = false;
     loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .sigint = false, }, });
+
+    [% IF !golpe.noConfig %]
+    auto fileExists = [](const char *name) {
+        return access(name, F_OK) != -1;
+    };
 
     if (args["--config"]) {
         configFile = args["--config"].asString();
@@ -83,6 +84,7 @@ void run(int argc, char **argv) {
     }
 
     loadConfig(configFile);
+    [% END %]
 
     std::string command = args["<command>"].asString();
 

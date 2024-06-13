@@ -18,7 +18,7 @@ my $ctx = {
     generatedHeaders => [ map { s{^build/+}{}r } glob('build/*_generated.h'), ],
 };
 
-$ctx->{useGlobalH} = 1 if -e './global.h';
+$ctx->{useGlobalH} = 1 if -e './src/global.h';
 
 
 my $tt = Template->new({

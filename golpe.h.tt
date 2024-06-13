@@ -68,6 +68,6 @@ extern defaultDb::environment env;
 [% END %]
 
 
-[% IF golpe.features.globalH %]
+[% IF useGlobalH %]
 #include "global.h"
 [% END %]

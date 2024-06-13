@@ -18,7 +18,7 @@
 
 static const char USAGE[] =
 R"(
-    Usage: [% golpe.appName %] [--config=<config>] <command> [<args>...]
+    Usage: [% golpe.appName %] [% IF golpe.features.config %][--config=<config>][% END -%] <command> [<args>...]
 
     Options:
       [% IF golpe.features.config %]--config=<config>   Config file (default $ENV{[% golpe.appName FILTER upper %]_CONFIG} || "/etc/[% golpe.appName %].conf" || "./[% golpe.appName %].conf")[% END %]

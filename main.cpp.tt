@@ -21,7 +21,7 @@ R"(
     Usage: [% golpe.appName %] [--config=<config>] <command> [<args>...]
 
     Options:
-      --config=<config>   Config file (default $ENV{[% golpe.appName FILTER upper %]_CONFIG} || "/etc/[% golpe.appName %].conf" || "./[% golpe.appName %].conf")
+      [% IF golpe.features.config %]--config=<config>   Config file (default $ENV{[% golpe.appName FILTER upper %]_CONFIG} || "/etc/[% golpe.appName %].conf" || "./[% golpe.appName %].conf")[% END %]
       -h --help           Show this screen.
       --version           Show version.
 
@@ -43,9 +43,14 @@ R"(
 
 
 
-std::string dbDir;
+[% IF golpe.features.config %]
 std::string configFile;
+[% END %]
+
+[% IF golpe.features.db %]
+std::string dbDir;
 defaultDb::environment env;
+[% END %]
 
 
 
@@ -66,7 +71,7 @@ void run(int argc, char **argv) {
     loguru::g_preamble_file = false;
     loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .sigint = false, }, });
 
-    [% IF !golpe.noConfig %]
+    [% IF golpe.features.config %]
     auto fileExists = [](const char *name) {
         return access(name, F_OK) != -1;
     };
@@ -88,7 +93,7 @@ void run(int argc, char **argv) {
 
     std::string command = args["<command>"].asString();
 
-    [% IF golpe.tables %]
+    [% IF golpe.features.db %]
     dbDir = cfg().db;
 
     unsigned int dbFlags = 0;

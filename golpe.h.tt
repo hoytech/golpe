@@ -2,18 +2,24 @@
 
 #include <string>
 
-#include <tao/config/value.hpp>
 #include <hoytech/hex.h>
 #include <hoytech/error.h>
+
+[% IF golpe.features.config %]
+#include <tao/config/value.hpp>
+[% END %]
 
 #include "flatbuffers/flatbuffers.h"
 #include "flatbuffers/minireflect.h"
 [% FOREACH h IN generatedHeaders -%]
 #include "[% h %]"
 [% END %]
-#include "defaultDb.h"
 
-[% IF golpe.onAppStartup %]
+[% IF golpe.features.db %]
+#include "defaultDb.h"
+[% END %]
+
+[% IF golpe.features.onAppStartup %]
 void onAppStartup(lmdb::txn &txn, const std::string &cmd);
 [% END %]
 
@@ -51,13 +57,17 @@ const uint64_t MAX_U64 = std::numeric_limits<uint64_t>::max();
 
 // Globals
 
+[% IF golpe.features.config %]
 #include "config.h"
-
-extern std::string dbDir;
 extern std::string configFile;
+[% END %]
+
+[% IF golpe.features.db %]
+extern std::string dbDir;
 extern defaultDb::environment env;
+[% END %]
 
 
-[% IF golpe.useGlobalH %]
+[% IF golpe.features.globalH %]
 #include "global.h"
 [% END %]

@@ -57,7 +57,7 @@ build/defaultDb.h: $(wildcard golpe.yaml src/apps/*/golpe.yaml)
 clean:
 	rm -f $(BIN) src/*.o src/*.d src/apps/*/*.o src/apps/*/*.d
 	rm -rf build/
-	cd golpe/external/uWebSockets && make clean
+	rm -f golpe/external/uWebSockets/src/{*.o,libuWS.a,libuWS.so}
 
 update-submodules:
 	git submodule update --init

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
+#include <limits>
 
 #include <hoytech/hex.h>
 #include <hoytech/error.h>
@@ -9,8 +11,11 @@
 #include <tao/config/value.hpp>
 [% END %]
 
+[% IF golpe.features.flatbuffers || golpe.features.db %]
 #include "flatbuffers/flatbuffers.h"
 #include "flatbuffers/minireflect.h"
+[% END %]
+
 [% FOREACH h IN generatedHeaders -%]
 #include "[% h %]"
 [% END %]

@@ -7,7 +7,7 @@ STD      ?= -std=c++20
 
 CXXFLAGS += $(STD) $(OPT) $(W) -fPIC $(XCXXFLAGS) -DDOCOPT_HEADER_ONLY
 INCS     += -Iinclude -Ibuild -Isrc -Igolpe/external -Igolpe/external/lmdbxx/include -Igolpe/external/config/include -Igolpe/external/json/include -Igolpe/external/PEGTL/include -Igolpe/external/hoytech-cpp -Igolpe/external/docopt.cpp -Igolpe/external/loguru -Igolpe/external/parallel-hashmap
-LDLIBS   += $(shell golpe/if-feature.pl websockets golpe/external/uWebSockets/libuWS.a) $(shell golpe/if-feature.pl db -llmdb) $(shell golpe/if-feature.pl ssl,websockets '-lcrypto -lssl') -ldl -lz -pthread
+LDLIBS   += $(shell golpe/if-feature.pl websockets golpe/external/uWebSockets/libuWS.a) $(shell golpe/if-feature.pl db -llmdb) $(shell golpe/if-feature.pl ssl,websockets '-lcrypto -lssl') $(shell golpe/if-feature.pl zlib,websockets -lz) -ldl -pthread
 LDFLAGS  += -flto $(XLDFLAGS)
 SRCS    := golpe/logging.cpp build/main.cpp $(shell golpe/if-feature.pl config build/config.cpp) $(wildcard src/*.cpp) $(wildcard $(foreach p,$(APPS),src/apps/$(p)/*.cpp))
 

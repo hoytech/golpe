@@ -2,6 +2,8 @@ package LoadGolpe;
 
 use strict;
 
+use lib "$FindBin::Bin/vendor/";
+
 use YAML;
 
 

@@ -2,9 +2,6 @@
 
 use strict;
 
-use Data::Dumper;
-use Template;
-
 use FindBin;
 use lib "$FindBin::Bin/";
 use LoadGolpe;

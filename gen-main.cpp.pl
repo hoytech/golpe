@@ -2,12 +2,12 @@
 
 use strict;
 
-use Data::Dumper;
-use Template;
-
 use FindBin;
 use lib "$FindBin::Bin/";
+use lib "$FindBin::Bin/vendor/";
+
 use LoadGolpe;
+use Template;
 
 
 my $golpe = LoadGolpe::load();

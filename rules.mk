@@ -68,6 +68,7 @@ setup-golpe:
 	    $(shell golpe/if-feature.pl config config) \
 	    $(shell golpe/if-feature.pl config,json,pegtl 'json PEGTL' ) \
 	    $(shell golpe/if-feature.pl db rasgueadb ) \
+	    $(shell golpe/if-feature.pl db lmdbxx ) \
 	    $(shell golpe/if-feature.pl templar templar ) \
 	    $(shell golpe/if-feature.pl websockets uWebSockets )
 

@@ -111,7 +111,7 @@ void run(int argc, char **argv) {
     {
         auto txn = env.txn_rw();
 
-        [% IF golpe.onAppStartup %]
+        [% IF golpe.features.onAppStartup %]
         onAppStartup(txn, command);
         [% END %]
 

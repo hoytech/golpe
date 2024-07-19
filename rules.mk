@@ -52,7 +52,7 @@ build/golpe.h: golpe/golpe.h.tt golpe/gen-golpe.h.pl $(wildcard global.h) $(wild
 %.d : ;
 
 build/defaultDb.h: $(wildcard golpe.yaml src/apps/*/golpe.yaml)
-	golpe/external/rasgueadb/rasgueadb-generate golpe.yaml build
+	PERL5LIB=golpe/vendor/ golpe/external/rasgueadb/rasgueadb-generate golpe.yaml build
 
 clean:
 	rm -f $(BIN) src/*.o src/*.d src/apps/*/*.o src/apps/*/*.d

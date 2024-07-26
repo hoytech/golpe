@@ -55,7 +55,7 @@ build/defaultDb.h: $(wildcard golpe.yaml src/apps/*/golpe.yaml)
 	PERL5LIB=golpe/vendor/ golpe/external/rasgueadb/rasgueadb-generate golpe.yaml build
 
 clean:
-	rm -f $(BIN) src/*.o src/*.d src/apps/*/*.o src/apps/*/*.d
+	rm -f $(BIN) src/*.{o,d} src/apps/*/*.{o,d}
 	rm -rf build/
 	rm -f golpe/external/uWebSockets/src/{*.o,libuWS.a,libuWS.so}
 

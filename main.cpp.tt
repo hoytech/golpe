@@ -65,6 +65,10 @@ void cmd_[% cmd %](const std::vector<std::string> &subArgs);
 
 
 void run(int argc, char **argv) {
+    [% IF golpe.features.onPreStartup %]
+    onPreStartup(argc, argv);
+    [% END %]
+
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %] " APP_GIT_VERSION, true);
 
     loguru::g_stderr_verbosity = [% golpe.verbosity || 0 %];

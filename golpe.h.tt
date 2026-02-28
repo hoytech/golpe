@@ -25,6 +25,10 @@
 #include "defaultDb.h"
 [% END %]
 
+[% IF golpe.features.onPreStartup %]
+void onPreStartup(int argc, char **argv);
+[% END %]
+
 [% IF golpe.features.onAppStartup %]
 void onAppStartup(lmdb::txn &txn, const std::string &cmd);
 [% END %]

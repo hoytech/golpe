@@ -73,7 +73,7 @@ void run(int argc, char **argv) {
 
     loguru::g_stderr_verbosity = [% golpe.verbosity || 0 %];
     loguru::g_preamble_file = false;
-    loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .sigint = false, }, });
+    loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .unsafe_signal_handler = false }, });
 
     [% IF golpe.features.config %]
     auto fileExists = [](const char *name) {

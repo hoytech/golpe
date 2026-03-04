@@ -17,6 +17,25 @@
 #include "flatbuffers/minireflect.h"
 [% END %]
 
+
+// Convenience
+
+using hoytech::to_hex;
+using hoytech::from_hex;
+#define herr hoytech::error
+
+struct NonCopyable {
+    NonCopyable & operator=(const NonCopyable&) = delete;
+    NonCopyable(const NonCopyable&) = delete;
+    NonCopyable(NonCopyable&&) = default;
+    NonCopyable() = default;
+};
+
+const uint64_t MAX_U64 = std::numeric_limits<uint64_t>::max();
+
+
+// Local headers and declarations
+
 [% FOREACH h IN generatedHeaders -%]
 #include "[% h %]"
 [% END %]
@@ -48,21 +67,6 @@ inline void setThreadName(const T&... value) {
     hoytech::build_string(o, value...);
     loguru::set_thread_name(o.str().c_str());
 }
-
-// Convenience
-
-using hoytech::to_hex;
-using hoytech::from_hex;
-#define herr hoytech::error
-
-struct NonCopyable {
-    NonCopyable & operator=(const NonCopyable&) = delete;
-    NonCopyable(const NonCopyable&) = delete;
-    NonCopyable(NonCopyable&&) = default;
-    NonCopyable() = default;
-};
-
-const uint64_t MAX_U64 = std::numeric_limits<uint64_t>::max();
 
 
 // Globals

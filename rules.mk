@@ -64,7 +64,7 @@ update-submodules:
 	cd golpe && git submodule update --init
 
 setup-golpe:
-	cd golpe/external && git submodule update --init hoytech-cpp docopt.cpp loguru parallel-hashmap \
+	cd golpe/external && git submodule update --init hoytech-cpp session-token-cpp docopt.cpp loguru parallel-hashmap \
 	    $(shell golpe/if-feature.pl config config) \
 	    $(shell golpe/if-feature.pl config,json,pegtl 'json PEGTL' ) \
 	    $(shell golpe/if-feature.pl db rasgueadb ) \

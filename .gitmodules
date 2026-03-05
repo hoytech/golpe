@@ -31,3 +31,6 @@
 [submodule "external/templar"]
 	path = external/templar
 	url = https://github.com/hoytech/templar.git
+[submodule "external/session-token-cpp"]
+	path = external/session-token-cpp
+	url = https://github.com/hoytech/session-token-cpp.git

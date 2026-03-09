@@ -60,6 +60,9 @@ void onAppStartup(lmdb::txn &txn, const std::string &cmd);
 #define LE LOG_S(ERROR)
 #define LW LOG_S(WARNING)
 #define LI LOG_S(INFO)
+#define LD LOG_S(1)
+#define LD2 LOG_S(2)
+#define LD3 LOG_S(3)
 
 template<class... T>
 inline void setThreadName(const T&... value) {

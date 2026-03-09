@@ -18,12 +18,13 @@
 
 static const char USAGE[] =
 R"(
-    Usage: [% golpe.appName %] [% IF golpe.features.config %][--config=<config>][% END -%] <command> [<args>...]
+    Usage: [% golpe.appName %] [% IF golpe.features.config %][--config=<config>][% END -%] [--verbosity=<level>] <command> [<args>...]
 
     Options:
-      [% IF golpe.features.config %]--config=<config>   Config file (default $ENV{[% golpe.appName FILTER upper %]_CONFIG} || "/etc/[% golpe.appName %].conf" || "./[% golpe.appName %].conf")[% END %]
-      -h --help           Show this screen.
-      --version           Show version.
+      [% IF golpe.features.config %]--config=<config>      Config file (default $ENV{[% golpe.appName FILTER upper %]_CONFIG} || "/etc/[% golpe.appName %].conf" || "./[% golpe.appName %].conf")[% END %]
+      --verbosity=<level>    Logging level: ERROR (only errors), WARN (errors+warnings), INFO (default), 1 (debug)
+      -h --help              Show this screen.
+      --version              Show version.
 
 [% IF cmds.size > 0 %]
     commands:
@@ -71,9 +72,12 @@ void run(int argc, char **argv) {
 
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %] " APP_GIT_VERSION, true);
 
-    loguru::g_stderr_verbosity = [% golpe.verbosity || 0 %];
+    loguru::g_stderr_verbosity = 0;
     loguru::g_preamble_file = false;
-    loguru::init(argc, argv, loguru::Options{ .signal_options = loguru::SignalOptions{ .unsafe_signal_handler = false }, });
+    loguru::init(argc, argv, loguru::Options{
+        .verbosity_flag = "--verbosity",
+        .signal_options = loguru::SignalOptions{ .unsafe_signal_handler = false },
+    });
 
     [% IF golpe.features.config %]
     auto fileExists = [](const char *name) {

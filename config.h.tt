@@ -1,6 +1,9 @@
 #pragma once
 
 #include <atomic>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include <tao/config/value.hpp>
 
@@ -20,8 +23,11 @@ struct ConfigValues {
 
 };
 
+using ConfigOverride = std::pair<std::string, std::string>;
+
 tao::config::value loadRawTaoConfig(const std::string &configFile);
 void loadConfig(const std::string &configFile);
+void loadConfig(const std::string &configFile, const std::vector<ConfigOverride> &overrides);
 
 extern std::atomic<ConfigValues*> currentCfg;
 

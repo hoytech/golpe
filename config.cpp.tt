@@ -1,4 +1,6 @@
 #include <mutex>
+#include <algorithm>
+#include <cctype>
 
 #include "golpe.h"
 
@@ -7,6 +9,58 @@
 
 std::atomic<ConfigValues*> currentCfg;
 std::mutex currentCfgModificationMutex;
+std::vector<ConfigOverride> cliOverrides;
+
+
+static std::string normalizeConfigKey(std::string key) {
+    size_t pos = 0;
+
+    while ((pos = key.find("__", pos)) != std::string::npos) {
+        key.replace(pos, 2, ".");
+        pos += 1;
+    }
+
+    return key;
+}
+
+
+static uint64_t parseUint64Override(const std::string &key, const std::string &rawValue) {
+    if (rawValue.empty() || rawValue[0] == '-') {
+        throw herr("invalid uint64 value for --set key '", key, "': '", rawValue, "'");
+    }
+
+    size_t parsedChars = 0;
+    unsigned long long parsedValue = 0;
+
+    try {
+        parsedValue = std::stoull(rawValue, &parsedChars, 10);
+    } catch (std::exception &) {
+        throw herr("invalid uint64 value for --set key '", key, "': '", rawValue, "'");
+    }
+
+    if (parsedChars != rawValue.size()) {
+        throw herr("invalid uint64 value for --set key '", key, "': '", rawValue, "'");
+    }
+
+    return static_cast<uint64_t>(parsedValue);
+}
+
+
+static bool parseBoolOverride(const std::string &key, std::string rawValue) {
+    std::transform(rawValue.begin(), rawValue.end(), rawValue.begin(), [](unsigned char c){
+        return static_cast<char>(std::tolower(c));
+    });
+
+    if (rawValue == "1" || rawValue == "true" || rawValue == "yes" || rawValue == "on") {
+        return true;
+    }
+
+    if (rawValue == "0" || rawValue == "false" || rawValue == "no" || rawValue == "off") {
+        return false;
+    }
+
+    throw herr("invalid bool value for --set key '", key, "': '", rawValue, "' (use true/false/1/0/yes/no/on/off)");
+}
 
 
 tao::config::value loadRawTaoConfig(const std::string &configFile) {
@@ -23,11 +77,22 @@ tao::config::value loadRawTaoConfig(const std::string &configFile) {
 
 
 void loadConfig(const std::string &configFile) {
+    loadConfig(configFile, {});
+}
+
+
+void loadConfig(const std::string &configFile, const std::vector<ConfigOverride> &overrides) {
     std::lock_guard<std::mutex> guard(currentCfgModificationMutex);
 
     LI << "CONFIG: Loading config from file: " << configFile;
 
     tao::config::value configJson = loadRawTaoConfig(configFile);
+
+    if (!overrides.empty()) {
+        cliOverrides = overrides;
+    }
+
+    const std::vector<ConfigOverride> &effectiveOverrides = cliOverrides;
 
     std::unique_ptr<ConfigValues> tmpCfg = std::make_unique<ConfigValues>(currentCfg.load() ? currentCfg.load()->version() + 1 : 1);
 
@@ -58,6 +123,33 @@ void loadConfig(const std::string &configFile) {
         [% END %]
     } while(0);
     [% END %]
+
+    if (!effectiveOverrides.empty()) {
+        for (const auto &[rawKey, rawValue] : effectiveOverrides) {
+            const std::string key = normalizeConfigKey(rawKey);
+            bool matched = false;
+
+            [% FOREACH c IN config %]
+            if (!matched && key == normalizeConfigKey("[% c.name %]")) {
+                [% IF c.type == 'uint64' %]
+                    tmpCfg->[% c.nameCpp %] = parseUint64Override(rawKey, rawValue);
+                [% ELSIF c.type == 'string' %]
+                    tmpCfg->[% c.nameCpp %] = rawValue;
+                [% ELSIF c.type == 'bool' %]
+                    tmpCfg->[% c.nameCpp %] = parseBoolOverride(rawKey, rawValue);
+                [% ELSE %]
+                    #error "unknown type [% c.type %]"
+                [% END %]
+
+                matched = true;
+            }
+            [% END %]
+
+            if (!matched) {
+                throw herr("unknown config key for --set override: ", rawKey);
+            }
+        }
+    }
 
     // Log config changes and check for non-reloadable changes
 

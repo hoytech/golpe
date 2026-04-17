@@ -6,6 +6,7 @@
 #include <sys/types.h>
 
 #include <iostream>
+#include <vector>
 
 #include <hoytech/error.h>
 #include <docopt.h>
@@ -18,10 +19,11 @@
 
 static const char USAGE[] =
 R"(
-    Usage: [% golpe.appName %] [% IF golpe.features.config %][--config=<config>][% END -%] [--verbosity=<level>] <command> [<args>...]
+        Usage: [% golpe.appName %] [% IF golpe.features.config %][--config=<config>] [--set=<entry>]...[% END -%] [--verbosity=<level>] <command> [<args>...]
 
     Options:
       [% IF golpe.features.config %]--config=<config>      Config file (default $ENV{[% golpe.appName FILTER upper %]_CONFIG} || "/etc/[% golpe.appName %].conf" || "./[% golpe.appName %].conf")[% END %]
+      [% IF golpe.features.config %]--set=<entry>          Override config value via key=value, Alternate form: --set <key> <value>[% END %]
       --verbosity=<level>    Logging level: ERROR (only errors), WARN (errors+warnings), INFO (default), 1 (debug)
       -h --help              Show this screen.
       --version              Show version.
@@ -46,6 +48,99 @@ R"(
 
 [% IF golpe.features.config %]
 std::string configFile;
+
+
+struct ParsedSetCliArgs {
+    std::vector<std::string> docoptArgs;
+    std::vector<ConfigOverride> overrides;
+};
+
+
+static bool isOptionToken(const std::string &arg) {
+    return !arg.empty() && arg[0] == '-';
+}
+
+
+static void parseSetAssignment(const std::string &entry, std::vector<ConfigOverride> &overrides) {
+    size_t pos = entry.find('=');
+
+    if (pos == std::string::npos || pos == 0) {
+        throw herr("invalid --set assignment (expected key=value): ", entry);
+    }
+
+    if (entry[0] == '-') {
+        throw herr("invalid --set key: ", entry.substr(0, pos));
+    }
+
+    overrides.emplace_back(entry.substr(0, pos), entry.substr(pos + 1));
+}
+
+
+static ParsedSetCliArgs parseSetCliArgs(int argc, char **argv) {
+    ParsedSetCliArgs parsed;
+    parsed.docoptArgs.reserve(argc > 0 ? static_cast<size_t>(argc - 1) : 0);
+
+    bool parsingGlobalOptions = true;
+
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+
+        if (parsingGlobalOptions && arg == "--set") {
+            if (i + 1 >= argc) {
+                throw herr("missing value after --set");
+            }
+
+            std::string entryOrKey = argv[++i];
+
+            if (entryOrKey.find('=') != std::string::npos) {
+                parseSetAssignment(entryOrKey, parsed.overrides);
+            } else {
+                if (entryOrKey.empty() || entryOrKey[0] == '-') {
+                    throw herr("invalid --set key: ", entryOrKey);
+                }
+
+                if (i + 1 >= argc) {
+                    throw herr("missing value for --set key: ", entryOrKey);
+                }
+
+                parsed.overrides.emplace_back(entryOrKey, argv[++i]);
+            }
+
+            continue;
+        }
+
+        if (parsingGlobalOptions && arg.rfind("--set=", 0) == 0) {
+            parseSetAssignment(arg.substr(strlen("--set=")), parsed.overrides);
+            continue;
+        }
+
+        parsed.docoptArgs.push_back(arg);
+
+        if (!parsingGlobalOptions) {
+            continue;
+        }
+
+        if (arg == "--") {
+            parsingGlobalOptions = false;
+            continue;
+        }
+
+        if (arg == "--verbosity"[% IF golpe.features.config %] || arg == "--config"[% END %]) {
+            if (i + 1 >= argc) {
+                throw herr("missing value after ", arg);
+            }
+
+            parsed.docoptArgs.push_back(argv[++i]);
+            continue;
+        }
+
+        if (!isOptionToken(arg)) {
+            parsingGlobalOptions = false;
+        }
+    }
+
+    return parsed;
+}
 [% END %]
 
 [% IF golpe.features.db %]
@@ -70,7 +165,12 @@ void run(int argc, char **argv) {
     onPreStartup(argc, argv);
     [% END %]
 
+    [% IF golpe.features.config %]
+    auto parsedSetCli = parseSetCliArgs(argc, argv);
+    std::map<std::string, docopt::value> args = docopt::docopt(USAGE, parsedSetCli.docoptArgs, true, "[% golpe.appName %] " APP_GIT_VERSION, true);
+    [% ELSE %]
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE, { argv + 1, argv + argc }, true, "[% golpe.appName %] " APP_GIT_VERSION, true);
+    [% END %]
 
     loguru::g_stderr_verbosity = 0;
     loguru::g_preamble_file = false;
@@ -96,7 +196,7 @@ void run(int argc, char **argv) {
         throw hoytech::error("please specify config file");
     }
 
-    loadConfig(configFile);
+    loadConfig(configFile, parsedSetCli.overrides);
     [% END %]
 
     std::string command = args["<command>"].asString();

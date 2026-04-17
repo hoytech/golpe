@@ -6,7 +6,7 @@ Most of the framework is configured in a declarative manner, by editing a file n
 
 ## Features
 
-* [LMDB](https://lmdb.tech/) database integration
+* [LMDB](https://www.symas.com/mdb) database integration
   * C++17 fork of [lmdbxx](https://github.com/hoytech/lmdbxx/)
   * [RasgueaDB](https://github.com/hoytech/rasgueadb) indexing and query layer
   * [Flatbuffers](https://google.github.io/flatbuffers/) for DB record encoding (and optionally network transports)

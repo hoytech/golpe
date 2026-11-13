@@ -4,6 +4,7 @@
 
 #include <string>
 #include <limits>
+#include <vector>
 
 #include <hoytech/hex.h>
 #include <hoytech/error.h>

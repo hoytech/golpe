@@ -55,8 +55,9 @@ build/defaultDb.h: $(wildcard golpe.yaml src/apps/*/golpe.yaml)
 	PERL5LIB=golpe/vendor/ golpe/external/rasgueadb/rasgueadb-generate golpe.yaml build
 
 clean:
-	rm -f $(BIN) src/*.{o,d} src/apps/*/*.{o,d}
+	rm -f $(BIN)
 	rm -rf build/
+	find src/ -name "*.[od]" -type f -delete
 	$(foreach dir, config json lmdbxx PEGTL uWebSockets, $(MAKE) -C golpe/external/$(dir) clean;)
 
 update-submodules:
